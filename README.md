@@ -1,57 +1,73 @@
+---
+> 🚀 **Trial v0.30.0 is live!** The latest release is available for trial today — [get started in 5 minutes →](#try-v030-in-5-minutes)
+
 # Veyron — Community
 
-> **Kubernetes-native VM command center — Rust, KubeVirt, 44 OS templates, 40+ dashboard pages**
+> **Kubernetes-native VM command center — Rust, KubeVirt, 44 OS templates, 40+ dashboard pages.**
+
+![Version](https://img.shields.io/badge/version-v0.30.0-blue) ![Discussions](https://img.shields.io/github/discussions/hypersdk/veyron-community) ![Issues](https://img.shields.io/github/issues/hypersdk/veyron-community) ![License](https://img.shields.io/badge/license-Proprietary-red)
 
 Public issue tracker and community feedback space for **Veyron** by [Zyvor AI Labs](https://zyvor.dev).
-
-The source code is maintained in a private repository. This repo is for:
-- Bug reports
-- Feature requests
-- UX feedback
-- Documentation gaps
-- Questions and discussion
+The source code is maintained in a private repository. This repo is for bug reports, feature requests, UX feedback, and community discussion.
 
 ---
 
-## Key features
+## What's new in v0.30
 
-- Declarative VM builder — 44 OS templates, 8 resource profiles
-- Mission Control web dashboard — 40+ specialized pages
-- CLI · TUI · REST API (49 routes)
-- VeyronVM CRD + Go operator for GitOps
-- Browser VNC console — direct K8s WebSocket
-- Multi-VM blueprints: LAMP, K8s, 3-tier, CI/CD
-- VeyronPolicy CRDs with CEL deny rules
-- Terraform provider
+- Live VM migration is now GA — migrate running VMs between nodes from the UI
+- Snapshot restore directly from the Mission Control dashboard
+- ARM64 node support — Veyron CLI and operator run natively on Apple Silicon and Ampere
+- Terraform provider v0.30 — manage VMs as code with full state import
+- Blueprint stacks: added 6 new templates (Redis cluster, Kafka, Postgres HA)
 
 ---
 
-## Installation
+## Why Veyron
 
-Veyron runs on any Kubernetes cluster with KubeVirt installed.
+| Problem | Veyron answer |
+|---------|--------------|
+| KubeVirt YAML is verbose and error-prone | Templates, validation, blueprints — create VMs in seconds |
+| virtctl gives a single VM, not a fleet | Mission Control manages your entire VM estate from one dashboard |
+| GitOps needs CR-native VM definitions | VeyronVM CRD + operator — commit VMs to git, operator reconciles |
+| Browser VNC through kubectl port-forward drops | Direct K8s WebSocket VNC — stable, persistent, shareable URL |
+| Policy violations slip through at scale | VeyronPolicy CRDs with CEL deny rules — enforce before apply |
 
-**Helm:**
+---
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Surfaces     CLI · TUI · Web dashboard · REST API (49 routes)│
+├──────────────────────────────────────────────────────────────┤
+│  GitOps       VeyronVM CRD · Go operator · Helm charts       │
+├──────────────────────────────────────────────────────────────┤
+│  KubeVirt     VirtualMachine lifecycle · snapshots · migrate │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Try v0.30 in 5 minutes
+
 ```bash
 helm repo add hypersdk https://charts.hypersdk.dev
-helm install veyron hypersdk/veyron -n veyron-system --create-namespace
+helm install veyron hypersdk/veyron --version 0.30.0 \
+  -n veyron-system --create-namespace
 ```
 
-**CLI (standalone):**
+Access the dashboard:
 ```bash
-# Download the latest release binary
-curl -fsSL https://releases.hypersdk.dev/veyron/install.sh | bash
-
-# Create a VM from template
-veyron create --template ubuntu-22.04 --name web-01
-
-# Deploy a blueprint stack
-veyron blueprint deploy lamp --namespace dev
-
-# Web dashboard + API
-veyron serve  # → https://localhost:8080
+kubectl port-forward svc/veyron-ui 8080:80 -n veyron-system
+# → http://localhost:8080
 ```
 
-**Requirements:** Kubernetes 1.28+, KubeVirt installed, 2 GB RAM for the control plane
+Create your first VM:
+```bash
+veyron create --template ubuntu-22.04 --name my-first-vm
+```
+
+**Requirements:** Kubernetes 1.28+, KubeVirt installed, 2 GB RAM for the Veyron control plane
 
 ---
 
@@ -59,7 +75,7 @@ veyron serve  # → https://localhost:8080
 
 [Open a Bug Report →](../../issues/new?template=bug_report.yml)
 
-Include: what you did, what happened, what you expected, your environment, and screenshots/logs (redact secrets).
+Include: what you did, what happened, what you expected, your environment, screenshots or logs (redact secrets).
 
 ## Request a feature
 
@@ -67,7 +83,7 @@ Include: what you did, what happened, what you expected, your environment, and s
 
 ## UX feedback
 
-[Open a UX Feedback →](../../issues/new?template=ux_feedback.yml)
+[Open a UX Report →](../../issues/new?template=ux_feedback.yml)
 
 ## Ask a question
 
@@ -78,18 +94,21 @@ Use [GitHub Discussions](../../discussions) for open-ended questions, ideas, and
 ## Security
 
 **Do not report security vulnerabilities publicly.**
-
 Email **security@zyvor.dev** — see [SECURITY.md](SECURITY.md).
 
 ---
 
 ## Do not post
 
-- Source code or internal configuration
-- API tokens, license keys, or credentials  
+- Source code, internal configs, or architecture details
+- API tokens, license keys, or credentials
 - Private logs with sensitive data
-- Security vulnerabilities (email security@zyvor.dev)
+- Security vulnerabilities — email security@zyvor.dev instead
 
 ---
+
+## Join the community
+
+⭐ [Star this repo](https://github.com/hypersdk/veyron-community) · 💬 [Open a Discussion](https://github.com/hypersdk/veyron-community/discussions) · 🐛 [Report a Bug](../../issues/new?template=bug_report.yml) · 📧 [hello@zyvor.dev](mailto:hello@zyvor.dev)
 
 Maintained by [Zyvor AI Labs](https://zyvor.dev)
